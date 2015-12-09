@@ -1,0 +1,17 @@
+<VibraPlotter version="0.8">
+ <Info Date_time ="03-12-2015_03-36-18" Channels ="5" Recording_time ="1"/>
+ <Sensitivity>
+  <Sense level="100" channel="1"/>
+  <Sense level="200" channel="2"/>
+  <Sense level="300" channel="3"/>
+  <Sense level="400" channel="4"/>
+  <Sense level="500" channel="5"/>
+ </Sensitivity>
+ <Comments>
+  <Comment channel="1" text=""/>
+  <Comment channel="2" text=""/>
+  <Comment channel="3" text=""/>
+  <Comment channel="4" text=""/>
+  <Comment channel="5" text=""/>
+ </Comments>
+</VibraPlotter>

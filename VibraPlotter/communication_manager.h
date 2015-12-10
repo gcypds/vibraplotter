@@ -2,7 +2,7 @@
 #define COMMUNICATION_MANAGER_H
 
 #include <QObject>
-#include <QtSerialPort/QSerialPort>
+#include <QtSerialPort\qserialport.h>
 #include "Protocol.h"
 
 const unsigned char communication_ok_response[2] = { 0xEE, 0xFF };

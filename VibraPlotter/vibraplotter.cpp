@@ -63,8 +63,6 @@ VibraPlotter::VibraPlotter(QWidget *parent) : QMainWindow(parent)
 	connect(ui_newProject->CancelNewButton, SIGNAL(clicked()), this, SLOT(Cancel_NewProj()));
 	//------------------------------------
 
-	connect(gui->actionSettings, SIGNAL(triggered()), this, SLOT(startADQ()));
-
 	//------------------------------------
 	//Load Project Dialog
 
@@ -102,7 +100,24 @@ VibraPlotter::VibraPlotter(QWidget *parent) : QMainWindow(parent)
 	//------------------------------------
 
 	//------------------------------------
+	//Settings Dialog
+
+	//Create loadProject Dialog
+	settings = new QDialog(this);
+	ui_settings = new Ui_settings();
+	ui_settings->setupUi(settings);
+
+	//Show save project dialog when icon clicked
+	connect(gui->actionSettings, SIGNAL(triggered()), this, SLOT(ShowSettingsDialog()));
+
+
+	//------------------------------------
+
+	//------------------------------------
 	//Communication 
+
+	//Get available serial ports
+	ListSerialPorts();
 
 	//Create communication manager object
 	serial_manager = new CommunicationManager();
@@ -127,6 +142,7 @@ VibraPlotter::VibraPlotter(QWidget *parent) : QMainWindow(parent)
 
 	//Select to plot a channel 
 	connect(gui->channel_combo_box, SIGNAL(currentIndexChanged(int)), this, SLOT(FourierPlot()));
+
 }
 
 VibraPlotter::~VibraPlotter()
@@ -143,6 +159,9 @@ void VibraPlotter::ShowNewProjectDialog()
 	//Set combobox to Nchannels
 	ui_newProject->NChannels->setCurrentIndex(Nchannels-1);
 
+	//Initialize serial port combobox
+	ui_newProject->serialPortCom->insertItems(0,portList);
+	
 	//Initialize sensitivity table
 	QTableWidget *SensTable = ui_newProject->tableSensitivity;
 	SensTable->setColumnCount(2);
@@ -556,6 +575,40 @@ void VibraPlotter::SaveTxtData()
 
 }
 
+void VibraPlotter::ShowSettingsDialog()
+{
+	//Set default save name
+	ui_settings->projectName_edit->setText(ProjName);
+
+	//Set serial port combobox
+	ui_settings->serialPort_cbox->insertItems(0, portList);
+
+	//Set sensitivity table 
+	QTableWidget *SensTable = ui_settings->sensitivity_table;
+	SensTable->setColumnCount(2);
+	SensTable->setRowCount(Nchannels);
+
+	QStringList column_names;
+	column_names << "Channel Id" << "Sensitivity";
+	SensTable->setHorizontalHeaderLabels(column_names);
+
+	for (int i = 0; i < Nchannels; i++)
+	{
+		QTableWidgetItem * id_channel = new QTableWidgetItem(QString::number(i + 1));
+		id_channel->setFlags(Qt::NoItemFlags);
+		SensTable->setItem(i, 0, id_channel);
+
+		QTableWidgetItem * sense_channel = new QTableWidgetItem(QString::number(Sensitivity[i]));
+		sense_channel->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable);
+		SensTable->setItem(i, 1, sense_channel);
+	}
+	SensTable->verticalHeader()->setVisible(false);
+	SensTable->horizontalHeader()->setStretchLastSection(true);
+
+	//Show settings dialog
+	settings->exec();
+}
+
 void VibraPlotter::readData()
 {
 	QByteArray data = serial_manager->serial->readAll();
@@ -630,6 +683,14 @@ void VibraPlotter::GetDateTime()
 	QString str(buffer);
 
 	DateTime = str;
+}
+
+void VibraPlotter::ListSerialPorts()
+{
+	QList<QSerialPortInfo> ports = QSerialPortInfo::availablePorts();
+
+	foreach(const QSerialPortInfo &item, ports)
+		portList << item.portName();
 }
 
 void VibraPlotter::loadData( )

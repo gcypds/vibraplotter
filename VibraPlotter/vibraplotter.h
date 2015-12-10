@@ -6,6 +6,7 @@
 #include "ui_newProject.h"
 #include "ui_loadProject.h"
 #include "ui_saveProject.h"
+#include "ui_settings.h"
 #include <qvector.h>
 #include <fstream>
 #include <iostream>
@@ -15,6 +16,7 @@
 #include <qdir.h>
 #include "communication_manager.h"
 #include <qprogressdialog.h>
+#include <QtSerialPort\qserialportinfo.h>
 
 class VibraPlotter : public QMainWindow
 {
@@ -51,6 +53,8 @@ private:
 
 	void LoadXML(QString XMLpath, bool flag_global_copy);
 
+	void ListSerialPorts();
+
 	//Variables
 	QVector<QVector<double>> Channels;
 	QVector<QVector<double>> FChannels;
@@ -65,6 +69,7 @@ private:
 	int NChannels_proj;
 	double RecTime_proj;
 	bool projOpened;
+	QStringList portList;
 		
 	//Main Gui
 	Ui::VibraPlotterClass ui;
@@ -78,9 +83,13 @@ private:
 	QDialog *loadProject;
 	Ui_loadProject *ui_loadProject;
 
-	//Load Project Dialog
+	//Save Project Dialog
 	QDialog *saveProject;
 	Ui_saveProject *ui_saveProject;
+
+	//Ssettings Dialog
+	QDialog *settings;
+	Ui_settings *ui_settings;
 
 	QString ProjName;
 	QVector<double> Sensitivity;
@@ -137,6 +146,8 @@ public slots:
 	void AcceptSave();
 
 	void Cancel_SaveProj();
+
+	void ShowSettingsDialog();
 
 	void readData();
 

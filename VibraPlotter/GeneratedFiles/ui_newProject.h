@@ -40,7 +40,7 @@ public:
     QHBoxLayout *horizontalLayout_2;
     QSpacerItem *horizontalSpacer_3;
     QLabel *label_3;
-    QComboBox *comboBox;
+    QComboBox *RecTime_Cbox;
     QSpacerItem *horizontalSpacer_4;
     QHBoxLayout *horizontalLayout_5;
     QSpacerItem *horizontalSpacer_10;
@@ -114,10 +114,10 @@ public:
 
         horizontalLayout_2->addWidget(label_3);
 
-        comboBox = new QComboBox(verticalLayoutWidget);
-        comboBox->setObjectName(QStringLiteral("comboBox"));
+        RecTime_Cbox = new QComboBox(verticalLayoutWidget);
+        RecTime_Cbox->setObjectName(QStringLiteral("RecTime_Cbox"));
 
-        horizontalLayout_2->addWidget(comboBox);
+        horizontalLayout_2->addWidget(RecTime_Cbox);
 
         horizontalSpacer_4 = new QSpacerItem(30, 20, QSizePolicy::Fixed, QSizePolicy::Minimum);
 
@@ -233,8 +233,8 @@ public:
         Dialog->setWindowTitle(QApplication::translate("Dialog", "Dialog", 0));
         label->setText(QApplication::translate("Dialog", "Project Name", 0));
         label_3->setText(QApplication::translate("Dialog", "Recording Time (minutes)", 0));
-        comboBox->clear();
-        comboBox->insertItems(0, QStringList()
+        RecTime_Cbox->clear();
+        RecTime_Cbox->insertItems(0, QStringList()
          << QApplication::translate("Dialog", "1", 0)
          << QApplication::translate("Dialog", "2", 0)
          << QApplication::translate("Dialog", "3", 0)

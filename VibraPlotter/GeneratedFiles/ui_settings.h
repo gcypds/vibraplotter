@@ -21,6 +21,7 @@
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSpacerItem>
+#include <QtWidgets/QSpinBox>
 #include <QtWidgets/QTableWidget>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
@@ -40,7 +41,7 @@ public:
     QHBoxLayout *horizontalLayout_3;
     QSpacerItem *horizontalSpacer_16;
     QLabel *label_2;
-    QComboBox *recTime_cbox;
+    QSpinBox *recTime_sbox;
     QSpacerItem *horizontalSpacer_15;
     QHBoxLayout *horizontalLayout_4;
     QSpacerItem *horizontalSpacer_18;
@@ -123,10 +124,12 @@ public:
 
         horizontalLayout_3->addWidget(label_2);
 
-        recTime_cbox = new QComboBox(verticalLayoutWidget);
-        recTime_cbox->setObjectName(QStringLiteral("recTime_cbox"));
+        recTime_sbox = new QSpinBox(verticalLayoutWidget);
+        recTime_sbox->setObjectName(QStringLiteral("recTime_sbox"));
+        recTime_sbox->setMinimum(1);
+        recTime_sbox->setMaximum(600);
 
-        horizontalLayout_3->addWidget(recTime_cbox);
+        horizontalLayout_3->addWidget(recTime_sbox);
 
         horizontalSpacer_15 = new QSpacerItem(30, 20, QSizePolicy::Fixed, QSizePolicy::Minimum);
 
@@ -312,7 +315,7 @@ public:
     {
         settings->setWindowTitle(QApplication::translate("settings", "Dialog", 0));
         label->setText(QApplication::translate("settings", "Project Name", 0));
-        label_2->setText(QApplication::translate("settings", "Recording Time (minutes)", 0));
+        label_2->setText(QApplication::translate("settings", "Recording Time (seconds)", 0));
         label_3->setText(QApplication::translate("settings", "Serial Port", 0));
         label_4->setText(QApplication::translate("settings", "Number of Channels", 0));
         channels_cbox->clear();

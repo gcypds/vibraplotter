@@ -55,6 +55,8 @@ private:
 
 	void ListSerialPorts();
 
+	void UpdateSensitivityTable(QTableWidget *Table);
+
 	//Variables
 	QVector<QVector<double>> Channels;
 	QVector<QVector<double>> FChannels;
@@ -129,7 +131,7 @@ public slots:
 
 	void ShowNewProjectDialog();
 
-	void ShowSensitivityTable();
+	void UpdateTable_new();
 
 	void ValidateAccept_NewProj();
 
@@ -148,6 +150,8 @@ public slots:
 	void Cancel_SaveProj();
 
 	void ShowSettingsDialog();
+
+	void UpdateTable_set();
 
 	void readData();
 

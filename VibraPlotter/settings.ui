@@ -90,12 +90,19 @@
       <item>
        <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>Recording Time (minutes)</string>
+         <string>Recording Time (seconds)</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QComboBox" name="recTime_cbox"/>
+       <widget class="QSpinBox" name="recTime_sbox">
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>600</number>
+        </property>
+       </widget>
       </item>
       <item>
        <spacer name="horizontalSpacer_15">

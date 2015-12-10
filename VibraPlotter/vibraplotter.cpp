@@ -53,8 +53,8 @@ VibraPlotter::VibraPlotter(QWidget *parent) : QMainWindow(parent)
 	//Show new project dialog when clicked
 	connect(gui->actionNewProject, SIGNAL(triggered()), this, SLOT(ShowNewProjectDialog()));
 	
-	//Show sensitivity table
-	connect(ui_newProject->NChannels, SIGNAL(currentIndexChanged(int)), this, SLOT(ShowSensitivityTable()));
+	//Update and show sensitivity table
+	connect(ui_newProject->NChannels, SIGNAL(currentIndexChanged(int)), this, SLOT(UpdateTable_new()));
 
 	//Validate and accept new project
 	connect(ui_newProject->AcceptNewButton, SIGNAL(clicked()), this, SLOT(ValidateAccept_NewProj()));
@@ -109,6 +109,9 @@ VibraPlotter::VibraPlotter(QWidget *parent) : QMainWindow(parent)
 
 	//Show save project dialog when icon clicked
 	connect(gui->actionSettings, SIGNAL(triggered()), this, SLOT(ShowSettingsDialog()));
+
+	//Update and show sensitivity table
+	connect(ui_settings->channels_cbox, SIGNAL(currentIndexChanged(int)), this, SLOT(UpdateTable_set()));
 
 
 	//------------------------------------
@@ -177,7 +180,7 @@ void VibraPlotter::ShowNewProjectDialog()
 		id_channel->setFlags(Qt::NoItemFlags);
 		SensTable->setItem(i, 0, id_channel);
 
-		QTableWidgetItem * sense_channel = new QTableWidgetItem(QString::number(100 * (i + 1)));
+		QTableWidgetItem * sense_channel = new QTableWidgetItem(QString::number(10));
 		sense_channel->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable);
 		SensTable->setItem(i, 1, sense_channel);
 	}
@@ -188,16 +191,24 @@ void VibraPlotter::ShowNewProjectDialog()
 	newProject->exec();
 }
 
-void VibraPlotter::ShowSensitivityTable()
+void VibraPlotter::UpdateTable_new()
 {
 	//Read number of channels 
-	Nchannels = ui_newProject->NChannels->currentIndex()+1;
+	Nchannels = ui_newProject->NChannels->currentIndex() + 1;
 
+	//Set sensitivity vector
+	Sensitivity = QVector<double>(Nchannels, 10);
+
+	//Update sensitivity table
+	UpdateSensitivityTable(ui_newProject->tableSensitivity);
+}
+
+void VibraPlotter::UpdateSensitivityTable(QTableWidget *SensTable)
+{
 	//Resize comments size
 	Comments.resize(Nchannels);
 
 	//Set sensitivity table accoriding input
-	QTableWidget *SensTable = ui_newProject->tableSensitivity;
 	SensTable->setColumnCount(2);
 	SensTable->setRowCount(Nchannels);
 
@@ -205,13 +216,13 @@ void VibraPlotter::ShowSensitivityTable()
 	column_names << "Channel Id" << "Sensitivity";
 	SensTable->setHorizontalHeaderLabels(column_names);
 
-	for (int i = 0; i < Nchannels+1; i++)
+	for (int i = 0; i < Nchannels; i++)
 	{
 		QTableWidgetItem * id_channel = new QTableWidgetItem(QString::number(i + 1));
 		id_channel->setFlags(Qt::NoItemFlags);
 		SensTable->setItem(i, 0, id_channel);
 
-		QTableWidgetItem * sense_channel = new QTableWidgetItem(QString::number(100 * (i + 1)));
+		QTableWidgetItem * sense_channel = new QTableWidgetItem(QString::number(Sensitivity[i]));
 		sense_channel->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable);
 		SensTable->setItem(i, 1, sense_channel);
 	}
@@ -279,7 +290,7 @@ void VibraPlotter::ValidateAccept_NewProj()
 	}
 
 	//Copy Recording time to class variables
-	Rec_Time = ui_newProject->RecTime_Cbox->currentIndex()+1;
+	Rec_Time = ui_newProject->recTime_sbox->value();
 
 	//Close new project dialog
 	newProject->close();
@@ -577,8 +588,11 @@ void VibraPlotter::SaveTxtData()
 
 void VibraPlotter::ShowSettingsDialog()
 {
-	//Set default save name
+	//Set save name
 	ui_settings->projectName_edit->setText(ProjName);
+
+	//Set combobox to Nchannels
+	ui_settings->channels_cbox->setCurrentIndex(Nchannels - 1);
 
 	//Set serial port combobox
 	ui_settings->serialPort_cbox->insertItems(0, portList);
@@ -607,6 +621,18 @@ void VibraPlotter::ShowSettingsDialog()
 
 	//Show settings dialog
 	settings->exec();
+}
+
+void VibraPlotter::UpdateTable_set()
+{
+	//Read number of channels 
+	Nchannels = ui_settings->channels_cbox->currentIndex() + 1;
+
+	//Update sensitivity size
+	Sensitivity.resize(Nchannels);
+	
+	//Update sensitivity table
+	UpdateSensitivityTable(ui_settings->sensitivity_table);
 }
 
 void VibraPlotter::readData()

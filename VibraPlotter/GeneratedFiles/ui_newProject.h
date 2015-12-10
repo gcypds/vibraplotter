@@ -21,6 +21,7 @@
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSpacerItem>
+#include <QtWidgets/QSpinBox>
 #include <QtWidgets/QTableWidget>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
@@ -40,7 +41,7 @@ public:
     QHBoxLayout *horizontalLayout_2;
     QSpacerItem *horizontalSpacer_3;
     QLabel *label_3;
-    QComboBox *RecTime_Cbox;
+    QSpinBox *recTime_sbox;
     QSpacerItem *horizontalSpacer_4;
     QHBoxLayout *horizontalLayout_5;
     QSpacerItem *horizontalSpacer_10;
@@ -114,10 +115,12 @@ public:
 
         horizontalLayout_2->addWidget(label_3);
 
-        RecTime_Cbox = new QComboBox(verticalLayoutWidget);
-        RecTime_Cbox->setObjectName(QStringLiteral("RecTime_Cbox"));
+        recTime_sbox = new QSpinBox(verticalLayoutWidget);
+        recTime_sbox->setObjectName(QStringLiteral("recTime_sbox"));
+        recTime_sbox->setMinimum(1);
+        recTime_sbox->setMaximum(600);
 
-        horizontalLayout_2->addWidget(RecTime_Cbox);
+        horizontalLayout_2->addWidget(recTime_sbox);
 
         horizontalSpacer_4 = new QSpacerItem(30, 20, QSizePolicy::Fixed, QSizePolicy::Minimum);
 
@@ -232,20 +235,7 @@ public:
     {
         Dialog->setWindowTitle(QApplication::translate("Dialog", "Dialog", 0));
         label->setText(QApplication::translate("Dialog", "Project Name", 0));
-        label_3->setText(QApplication::translate("Dialog", "Recording Time (minutes)", 0));
-        RecTime_Cbox->clear();
-        RecTime_Cbox->insertItems(0, QStringList()
-         << QApplication::translate("Dialog", "1", 0)
-         << QApplication::translate("Dialog", "2", 0)
-         << QApplication::translate("Dialog", "3", 0)
-         << QApplication::translate("Dialog", "4", 0)
-         << QApplication::translate("Dialog", "5", 0)
-         << QApplication::translate("Dialog", "6", 0)
-         << QApplication::translate("Dialog", "7", 0)
-         << QApplication::translate("Dialog", "8", 0)
-         << QApplication::translate("Dialog", "9", 0)
-         << QApplication::translate("Dialog", "10", 0)
-        );
+        label_3->setText(QApplication::translate("Dialog", "Recording Time (seconds)", 0));
         label_4->setText(QApplication::translate("Dialog", "Serial Port", 0));
         label_2->setText(QApplication::translate("Dialog", "Number of Channels", 0));
         NChannels->clear();

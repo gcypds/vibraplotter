@@ -55,7 +55,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="ProjectName">
+       <widget class="QLineEdit" name="projectName_edit">
         <property name="maximumSize">
          <size>
           <width>16777215</width>
@@ -161,7 +161,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QComboBox" name="serialPortCom"/>
+       <widget class="QComboBox" name="serialPort_cbox"/>
       </item>
       <item>
        <spacer name="horizontalSpacer_11">
@@ -207,7 +207,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QComboBox" name="NChannels">
+       <widget class="QComboBox" name="channels_cbox">
         <item>
          <property name="text">
           <string>1</string>

@@ -54,10 +54,10 @@ VibraPlotter::VibraPlotter(QWidget *parent) : QMainWindow(parent)
 	connect(gui->actionNewProject, SIGNAL(triggered()), this, SLOT(ShowNewProjectDialog()));
 	
 	//Update and show sensitivity table
-	connect(ui_newProject->NChannels, SIGNAL(currentIndexChanged(int)), this, SLOT(UpdateTable_new()));
+	connect(ui_newProject->channels_cbox, SIGNAL(currentIndexChanged(int)), this, SLOT(UpdateTable_new()));
 
 	//Validate and accept new project
-	connect(ui_newProject->AcceptNewButton, SIGNAL(clicked()), this, SLOT(ValidateAccept_NewProj()));
+	connect(ui_newProject->AcceptNewButton, SIGNAL(clicked()), this, SLOT(ValidateAccept_newProj()));
 
 	//Cancel new project
 	connect(ui_newProject->CancelNewButton, SIGNAL(clicked()), this, SLOT(Cancel_NewProj()));
@@ -84,6 +84,9 @@ VibraPlotter::VibraPlotter(QWidget *parent) : QMainWindow(parent)
 	//------------------------------------
 	//Save Project Dialog
 
+	//Initially set disabled save dialog
+	gui->actionSaveProject->setEnabled(false);
+
 	//Create loadProject Dialog
 	saveProject = new QDialog(this);
 	ui_saveProject = new Ui_saveProject();
@@ -102,6 +105,9 @@ VibraPlotter::VibraPlotter(QWidget *parent) : QMainWindow(parent)
 	//------------------------------------
 	//Settings Dialog
 
+	//Initially set disabled save dialog
+	gui->actionSettings->setEnabled(false);
+
 	//Create loadProject Dialog
 	settings = new QDialog(this);
 	ui_settings = new Ui_settings();
@@ -113,6 +119,8 @@ VibraPlotter::VibraPlotter(QWidget *parent) : QMainWindow(parent)
 	//Update and show sensitivity table
 	connect(ui_settings->channels_cbox, SIGNAL(currentIndexChanged(int)), this, SLOT(UpdateTable_set()));
 
+	//Validate and accept new settings
+	connect(ui_settings->acceptSettings_button, SIGNAL(clicked()), this, SLOT(ValidateAccept_setProj()));
 
 	//------------------------------------
 
@@ -157,13 +165,13 @@ void VibraPlotter::ShowNewProjectDialog()
 {
 	//Set project name with date and time
 	GetDateTime();
-	ui_newProject->ProjectName->setText(DateTime);
+	ui_newProject->projectName_edit->setText(DateTime);
 
 	//Set combobox to Nchannels
-	ui_newProject->NChannels->setCurrentIndex(Nchannels-1);
+	ui_newProject->channels_cbox->setCurrentIndex(Nchannels-1);
 
 	//Initialize serial port combobox
-	ui_newProject->serialPortCom->insertItems(0,portList);
+	ui_newProject->serialPort_cbox->insertItems(0,portList);
 	
 	//Initialize sensitivity table
 	QTableWidget *SensTable = ui_newProject->tableSensitivity;
@@ -194,7 +202,7 @@ void VibraPlotter::ShowNewProjectDialog()
 void VibraPlotter::UpdateTable_new()
 {
 	//Read number of channels 
-	Nchannels = ui_newProject->NChannels->currentIndex() + 1;
+	Nchannels = ui_newProject->channels_cbox->currentIndex() + 1;
 
 	//Set sensitivity vector
 	Sensitivity = QVector<double>(Nchannels, 10);
@@ -230,10 +238,10 @@ void VibraPlotter::UpdateSensitivityTable(QTableWidget *SensTable)
 	SensTable->horizontalHeader()->setStretchLastSection(true);
 }
 
-void VibraPlotter::ValidateAccept_NewProj()
+void VibraPlotter::ValidateAccept_newProj()
 {
 	//Validate project name
-	QString Pname = ui_newProject->ProjectName->text();
+	QString Pname = ui_newProject->projectName_edit->text();
 
 	if (Pname == "")
 	{
@@ -304,6 +312,10 @@ void VibraPlotter::ValidateAccept_NewProj()
 
 	//Change flag
 	projOpened = true;
+
+	//Enable save and settings actions
+	gui->actionSaveProject->setEnabled(true);
+	gui->actionSettings->setEnabled(true);
 }
 
 void VibraPlotter::Cancel_NewProj()
@@ -375,6 +387,10 @@ void VibraPlotter::Accept_LoadProj()
 
 	//Close load project dialog
 	loadProject->close();
+
+	//Enable save and settings actions
+	gui->actionSaveProject->setEnabled(true);
+	gui->actionSettings->setEnabled(true);
 
 	//Show status bar message
 	QString stMessage;
@@ -633,6 +649,80 @@ void VibraPlotter::UpdateTable_set()
 	
 	//Update sensitivity table
 	UpdateSensitivityTable(ui_settings->sensitivity_table);
+}
+
+void VibraPlotter::ValidateAccept_setProj()
+{
+	//Validate project name
+	QString Pname = ui_settings->projectName_edit->text();
+
+	if (Pname == "")
+	{
+		QMessageBox errorBox;
+		errorBox.setWindowTitle("Error");
+		errorBox.setIcon(QMessageBox::Icon::Critical);
+		errorBox.setText("Set a project name");
+		errorBox.setDefaultButton(QMessageBox::Ok);
+		errorBox.exec();
+		return;
+	}
+	if (Pname.indexOf('.') >= 0 || Pname.indexOf(':') >= 0 || Pname.indexOf('*') >= 0)
+	{
+		QMessageBox errorBox;
+		errorBox.setWindowTitle("Error");
+		errorBox.setIcon(QMessageBox::Icon::Critical);
+		errorBox.setText("Set a valid project name (avoid '.','*',':')");
+		errorBox.setDefaultButton(QMessageBox::Ok);
+		errorBox.exec();
+		return;
+	}
+
+	//Copy to class variable
+	ProjName = Pname;
+
+	//Validate sensitivity values from table
+	QTableWidget *SensTable = ui_settings->sensitivity_table;
+	QString Sens, ErrSens, NchSens;
+
+	Sensitivity.clear();
+
+	for (int i = 0; i < Nchannels; i++)
+	{
+		Sens = SensTable->item(i, 1)->text();
+
+		if (!ValidateNumber(Sens))
+		{
+			QMessageBox errorBox;
+			errorBox.setWindowTitle("Error");
+			errorBox.setIcon(QMessageBox::Icon::Critical);
+			NchSens = QString::number(i + 1);
+			ErrSens = "Set a valid sensitivity value for channel ";
+			ErrSens.append(NchSens);
+			errorBox.setText(ErrSens);
+			errorBox.setDefaultButton(QMessageBox::Ok);
+			errorBox.exec();
+			return;
+		}
+		else
+		{
+			//Copy to class variable
+			Sensitivity.append(Sens.toDouble());
+		}
+	}
+
+	//Copy Recording time to class variables
+	Rec_Time = ui_settings->recTime_sbox->value();
+
+	//Close new project dialog
+	settings->close();
+
+	//Show status bar message
+	QString stMessage;
+	stMessage = "Project ";
+	stMessage.append(Pname);
+	stMessage.append(" succesfully updated!");
+	gui->statusBar->showMessage(stMessage);
+
 }
 
 void VibraPlotter::readData()

@@ -36,7 +36,7 @@ public:
     QHBoxLayout *horizontalLayout;
     QSpacerItem *horizontalSpacer;
     QLabel *label;
-    QLineEdit *ProjectName;
+    QLineEdit *projectName_edit;
     QSpacerItem *horizontalSpacer_2;
     QHBoxLayout *horizontalLayout_2;
     QSpacerItem *horizontalSpacer_3;
@@ -46,12 +46,12 @@ public:
     QHBoxLayout *horizontalLayout_5;
     QSpacerItem *horizontalSpacer_10;
     QLabel *label_4;
-    QComboBox *serialPortCom;
+    QComboBox *serialPort_cbox;
     QSpacerItem *horizontalSpacer_11;
     QHBoxLayout *horizontalLayout_6;
     QSpacerItem *horizontalSpacer_12;
     QLabel *label_2;
-    QComboBox *NChannels;
+    QComboBox *channels_cbox;
     QSpacerItem *horizontalSpacer_13;
     QHBoxLayout *horizontalLayout_3;
     QSpacerItem *horizontalSpacer_5;
@@ -91,11 +91,11 @@ public:
 
         horizontalLayout->addWidget(label);
 
-        ProjectName = new QLineEdit(verticalLayoutWidget);
-        ProjectName->setObjectName(QStringLiteral("ProjectName"));
-        ProjectName->setMaximumSize(QSize(16777215, 20));
+        projectName_edit = new QLineEdit(verticalLayoutWidget);
+        projectName_edit->setObjectName(QStringLiteral("projectName_edit"));
+        projectName_edit->setMaximumSize(QSize(16777215, 20));
 
-        horizontalLayout->addWidget(ProjectName);
+        horizontalLayout->addWidget(projectName_edit);
 
         horizontalSpacer_2 = new QSpacerItem(30, 20, QSizePolicy::Fixed, QSizePolicy::Minimum);
 
@@ -140,10 +140,10 @@ public:
 
         horizontalLayout_5->addWidget(label_4);
 
-        serialPortCom = new QComboBox(verticalLayoutWidget);
-        serialPortCom->setObjectName(QStringLiteral("serialPortCom"));
+        serialPort_cbox = new QComboBox(verticalLayoutWidget);
+        serialPort_cbox->setObjectName(QStringLiteral("serialPort_cbox"));
 
-        horizontalLayout_5->addWidget(serialPortCom);
+        horizontalLayout_5->addWidget(serialPort_cbox);
 
         horizontalSpacer_11 = new QSpacerItem(30, 20, QSizePolicy::Fixed, QSizePolicy::Minimum);
 
@@ -163,10 +163,10 @@ public:
 
         horizontalLayout_6->addWidget(label_2);
 
-        NChannels = new QComboBox(verticalLayoutWidget);
-        NChannels->setObjectName(QStringLiteral("NChannels"));
+        channels_cbox = new QComboBox(verticalLayoutWidget);
+        channels_cbox->setObjectName(QStringLiteral("channels_cbox"));
 
-        horizontalLayout_6->addWidget(NChannels);
+        horizontalLayout_6->addWidget(channels_cbox);
 
         horizontalSpacer_13 = new QSpacerItem(30, 20, QSizePolicy::Fixed, QSizePolicy::Minimum);
 
@@ -238,8 +238,8 @@ public:
         label_3->setText(QApplication::translate("Dialog", "Recording Time (seconds)", 0));
         label_4->setText(QApplication::translate("Dialog", "Serial Port", 0));
         label_2->setText(QApplication::translate("Dialog", "Number of Channels", 0));
-        NChannels->clear();
-        NChannels->insertItems(0, QStringList()
+        channels_cbox->clear();
+        channels_cbox->insertItems(0, QStringList()
          << QApplication::translate("Dialog", "1", 0)
          << QApplication::translate("Dialog", "2", 0)
          << QApplication::translate("Dialog", "3", 0)

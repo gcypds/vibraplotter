@@ -133,7 +133,9 @@ public slots:
 
 	void UpdateTable_new();
 
-	void ValidateAccept_NewProj();
+	void ValidateAccept_newProj();
+
+	void ValidateAccept_setProj();
 
 	void Cancel_NewProj();
 

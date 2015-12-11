@@ -382,6 +382,9 @@ void VibraPlotter::Accept_LoadProj()
 	QString XMLpath = mainSavePath + "/" + savedProjects[sel_proj] + "/Info.xml";
 	LoadXML(XMLpath, true);
 
+	//Load project name
+	ProjName = savedProjects[sel_proj];
+
 	//Change flag
 	projOpened = true;
 
@@ -455,7 +458,7 @@ void VibraPlotter::LoadXML(QString XMLfile, bool flag_global_copy)
 	RecTime_proj = lcl_Rec_Time;
 
 	//Get sensitivity 
-	QDomElement sensitivity = vibraElem.nextSiblingElement();
+	QDomElement sensitivity = vibraElem.firstChildElement("Sensitivity");
 	QDomNodeList nodes = sensitivity.elementsByTagName("Sense");
 	for (int i = 0; i < nodes.size(); i++)
 	{
@@ -468,7 +471,7 @@ void VibraPlotter::LoadXML(QString XMLfile, bool flag_global_copy)
 	}
 
 	//Get comments
-	QDomElement comments = vibraElem.nextSiblingElement();
+	QDomElement comments = vibraElem.lastChildElement();
 	nodes = comments.elementsByTagName("Comment");
 	for (int i = 0; i < nodes.size(); i++)
 	{
